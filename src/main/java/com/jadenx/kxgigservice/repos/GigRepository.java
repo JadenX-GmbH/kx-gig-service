@@ -1,13 +1,15 @@
 package com.jadenx.kxgigservice.repos;
 
 import com.jadenx.kxgigservice.domain.Gig;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
 import java.util.UUID;
 
 
 public interface GigRepository extends JpaRepository<Gig, Long> {
-    Optional<Gig> getAllByDataOwner_Uid(UUID uid);
-    Optional<Gig> getAllByGigChosenSpecialistCandidateSpecialists_Uid(UUID uid);
+
+    Page<Gig>  findAllByDataOwner_Uid(UUID uid, final Pageable pageable);
+    Page<Gig>  findAllByGigChosenSpecialistCandidateSpecialists_Uid(UUID uid, final Pageable pageable);
 }

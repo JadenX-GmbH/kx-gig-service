@@ -1,6 +1,5 @@
 CREATE TABLE gig (
                      id BIGINT AUTO_INCREMENT NOT NULL,
-                     gig_id VARCHAR(255) NOT NULL,
                      max_price numeric(8, 2) NULL,
                      price numeric(8, 2) NULL,
                      price_token DOUBLE NULL,
@@ -57,7 +56,7 @@ CREATE TABLE sla_statement (
 
 CREATE TABLE skillset (
                           id BIGINT AUTO_INCREMENT NOT NULL,
-                          sklillset_id VARCHAR(255) NOT NULL,
+                          skillset_id VARCHAR(255) NOT NULL,
                           gig_id BIGINT NOT NULL,
                           date_created timestamp NOT NULL,
                           last_updated timestamp NOT NULL,
@@ -95,8 +94,6 @@ CREATE TABLE gig_chosen_specialist (
 
 ALTER TABLE gig ADD CONSTRAINT fk_gig_data_owner_id FOREIGN KEY (data_owner_id) REFERENCES data_owner (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
-ALTER TABLE gig ADD CONSTRAINT unique_gig_gig_id UNIQUE (gig_id);
-
 ALTER TABLE offer ADD CONSTRAINT fk_offer_gig_id FOREIGN KEY (gig_id) REFERENCES gig (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 ALTER TABLE offer ADD CONSTRAINT fk_offer_specialist_id FOREIGN KEY (specialist_id) REFERENCES specialist (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
@@ -106,8 +103,6 @@ ALTER TABLE contract ADD CONSTRAINT fk_contract_offer_id FOREIGN KEY (offer_id) 
 ALTER TABLE sla_statement ADD CONSTRAINT fk_sla_statement_gig_id FOREIGN KEY (gig_id) REFERENCES gig (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 ALTER TABLE skillset ADD CONSTRAINT fk_skillset_gig_id FOREIGN KEY (gig_id) REFERENCES gig (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
-
-ALTER TABLE skillset ADD CONSTRAINT unique_skillset_sklillset_id UNIQUE (sklillset_id);
 
 ALTER TABLE data_owner ADD CONSTRAINT unique_data_owner_uid UNIQUE (uid);
 

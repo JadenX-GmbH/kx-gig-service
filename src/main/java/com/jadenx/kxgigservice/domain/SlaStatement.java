@@ -1,7 +1,6 @@
 package com.jadenx.kxgigservice.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
@@ -10,6 +9,9 @@ import java.time.OffsetDateTime;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SlaStatement {
 
     @Id
@@ -24,6 +26,7 @@ public class SlaStatement {
     private String restriction;
 
     @Column
+    @Builder.Default
     private Boolean isActive = Boolean.TRUE;
 
     @ManyToOne(fetch = FetchType.LAZY)

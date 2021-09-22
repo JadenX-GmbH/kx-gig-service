@@ -1,6 +1,8 @@
 package com.jadenx.kxgigservice.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +10,8 @@ import lombok.Setter;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 
 
 @Getter
@@ -36,6 +40,14 @@ public class OfferDTO {
     private Long gig;
 
     @NotNull
-    private Long specialist;
+    private UUID specialist;
+
+    @JsonSerialize(using = OffsetDateTimeSerializer.class)
+    private OffsetDateTime dateCreated;
+
+    @JsonSerialize(using = OffsetDateTimeSerializer.class)
+    private OffsetDateTime lastUpdated;
+
+
 
 }

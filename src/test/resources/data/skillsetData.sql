@@ -1,5 +1,5 @@
 INSERT INTO skillset (id,
-                      sklillset_id,
+                      skillset_id,
                       gig_id,
                       date_created,
                       last_updated)

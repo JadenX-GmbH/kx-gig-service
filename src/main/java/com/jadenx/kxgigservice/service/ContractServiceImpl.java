@@ -1,49 +1,78 @@
 package com.jadenx.kxgigservice.service;
 
+import com.google.common.hash.Hashing;
 import com.jadenx.kxgigservice.domain.Contract;
-import com.jadenx.kxgigservice.domain.Offer;
+import com.jadenx.kxgigservice.mapper.ContractMapper;
+import com.jadenx.kxgigservice.model.ContractBcResponseDTO;
+import com.jadenx.kxgigservice.model.ContractBlockchainDto;
 import com.jadenx.kxgigservice.model.ContractDTO;
+import com.jadenx.kxgigservice.proxy.FeignRestClientProxyJs;
 import com.jadenx.kxgigservice.repos.ContractRepository;
-import com.jadenx.kxgigservice.repos.OfferRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
+@Transactional
 public class ContractServiceImpl implements ContractService {
 
     private final ContractRepository contractRepository;
-    private final OfferRepository offerRepository;
+    private final ContractMapper contractMapper;
+    private final FeignRestClientProxyJs feignRestClientProxyJs;
 
     public ContractServiceImpl(final ContractRepository contractRepository,
-                               final OfferRepository offerRepository) {
+                               final ContractMapper contractMapper,
+                               final FeignRestClientProxyJs feignRestClientProxyJs) {
         this.contractRepository = contractRepository;
-        this.offerRepository = offerRepository;
+        this.contractMapper = contractMapper;
+        this.feignRestClientProxyJs = feignRestClientProxyJs;
     }
 
     @Override
     public List<ContractDTO> findAll() {
         return contractRepository.findAll()
             .stream()
-            .map(contract -> mapToDTO(contract, new ContractDTO()))
+            .map(contract -> contractMapper.mapToDTO(contract, new ContractDTO()))
             .collect(Collectors.toList());
     }
 
     @Override
     public ContractDTO get(final Long id) {
         return contractRepository.findById(id)
-            .map(contract -> mapToDTO(contract, new ContractDTO()))
+            .map(contract -> contractMapper.mapToDTO(contract, new ContractDTO()))
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Override
     public Long create(final ContractDTO contractDTO) {
         final Contract contract = new Contract();
-        mapToEntity(contractDTO, contract);
+
+        String contractHash = "0x" + Hashing.sha256()
+            .hashString(contractDTO.toString(), StandardCharsets.UTF_8)
+            .toString();
+
+        try {
+            ContractBlockchainDto contractBlockchainDto = new ContractBlockchainDto();
+            contractBlockchainDto.setContractHash(contractHash);
+            ResponseEntity<ContractBcResponseDTO> responseDTO = feignRestClientProxyJs
+                .createContract(contractBlockchainDto);
+            contractDTO.setTransactionId(responseDTO.getBody().getTransactionId());
+            contractDTO.setBlockchainIdentifier(responseDTO.getBody().getBlockchainIdentifier());
+            log.info("Contract successfully saved in blockchain");
+
+        } catch (Exception e) {
+            log.error("Saving contract in blockchain failed!!");
+        }
+        contractMapper.mapToEntity(contractDTO, contract);
         return contractRepository.save(contract).getId();
     }
 
@@ -51,7 +80,7 @@ public class ContractServiceImpl implements ContractService {
     public void update(final Long id, final ContractDTO contractDTO) {
         final Contract contract = contractRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        mapToEntity(contractDTO, contract);
+        contractMapper.mapToEntity(contractDTO, contract);
         contractRepository.save(contract);
     }
 
@@ -60,33 +89,5 @@ public class ContractServiceImpl implements ContractService {
         contractRepository.deleteById(id);
     }
 
-    private ContractDTO mapToDTO(final Contract contract, final ContractDTO contractDTO) {
-        contractDTO.setId(contract.getId());
-        contractDTO.setSignatureRdo(contract.getSignatureRdo());
-        contractDTO.setSignatureDs(contract.getSignatureDs());
-        contractDTO.setAggregatedJson(contract.getAggregatedJson());
-        contractDTO.setTransactionId(contract.getTransactionId());
-        contractDTO.setBlockchainIdentifier(contract.getBlockchainIdentifier());
-        contractDTO.setIsActive(contract.getIsActive());
-        contractDTO.setOffer(contract.getOffer() == null ? null : contract.getOffer().getId());
-        return contractDTO;
-    }
-
-    private Contract mapToEntity(final ContractDTO contractDTO, final Contract contract) {
-        contract.setSignatureRdo(contractDTO.getSignatureRdo());
-        contract.setSignatureDs(contractDTO.getSignatureDs());
-        contract.setAggregatedJson(contractDTO.getAggregatedJson());
-        contract.setTransactionId(contractDTO.getTransactionId());
-        contract.setBlockchainIdentifier(contractDTO.getBlockchainIdentifier());
-        contract.setIsActive(contractDTO.getIsActive());
-        if (contractDTO.getOffer() != null
-            && (contract.getOffer() == null
-            || !contract.getOffer().getId().equals(contractDTO.getOffer()))) {
-            final Offer offer = offerRepository.findById(contractDTO.getOffer())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "offer not found"));
-            contract.setOffer(offer);
-        }
-        return contract;
-    }
 
 }

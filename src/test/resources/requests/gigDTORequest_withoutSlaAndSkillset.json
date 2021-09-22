@@ -1,0 +1,14 @@
+{
+    "maxPrice": "83.08",
+    "price": "73.08",
+    "priceToken": 20.42,
+    "title": "Aenean pulvinar...",
+    "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.",
+    "executionType": "TEE",
+    "status": "IN_PROGRESS",
+    "executionpool": "Aenean pulvinar...",
+    "isActive": true,
+    "gigChosenSpecialists": [
+        "bf14fa45-aa3c-4fa6-8f30-80a71fa6af5c"
+    ]
+}

@@ -13,8 +13,6 @@ import java.time.OffsetDateTime;
 public class Contract {
 
     @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -35,8 +33,9 @@ public class Contract {
     @Column
     private Boolean isActive = Boolean.TRUE;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "offer_id", nullable = false)
+    @MapsId
     private Offer offer;
 
     @Column(nullable = false, updatable = false)
@@ -44,6 +43,8 @@ public class Contract {
 
     @Column(nullable = false)
     private OffsetDateTime lastUpdated;
+
+
 
     @PrePersist
     public void prePersist() {

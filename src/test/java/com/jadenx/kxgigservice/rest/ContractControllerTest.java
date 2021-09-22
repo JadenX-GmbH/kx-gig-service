@@ -13,6 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -29,7 +30,7 @@ public class ContractControllerTest extends BaseIT {
             });
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1200L, response.getBody().get(0).getId());
+        assertEquals(1100L, response.getBody().get(0).getId());
     }
 
     @Test
@@ -39,7 +40,7 @@ public class ContractControllerTest extends BaseIT {
     public void getContract_success() {
         final HttpEntity<String> request = new HttpEntity<>(null, headers());
         final ResponseEntity<ContractDTO> response = restTemplate.exchange(
-            "/api/contracts/1200", HttpMethod.GET, request, ContractDTO.class);
+            "/api/contracts/1100", HttpMethod.GET, request, ContractDTO.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(false, response.getBody().getSignatureRdo());
@@ -88,10 +89,10 @@ public class ContractControllerTest extends BaseIT {
         final HttpEntity<String> request = new HttpEntity<>(
             readResource("/requests/contractDTORequest.json"), headers());
         final ResponseEntity<Void> response = restTemplate.exchange(
-            "/api/contracts/1200", HttpMethod.PUT, request, Void.class);
+            "/api/contracts/1100", HttpMethod.PUT, request, Void.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(true, contractRepository.findById(1200L).get().getSignatureRdo());
+        assertEquals(true, contractRepository.findById(1100L).get().getSignatureRdo());
     }
 
     @Test
@@ -101,13 +102,14 @@ public class ContractControllerTest extends BaseIT {
     public void deleteContract_success() {
         final HttpEntity<String> request = new HttpEntity<>(null, headers());
         final ResponseEntity<Void> response = restTemplate.exchange(
-            "/api/contracts/1200", HttpMethod.DELETE, request, Void.class);
-
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        assertEquals(0, contractRepository.count());
-        assertEquals(1, offerRepository.count());
-        assertEquals(2, gigRepository.count());
-        assertEquals(1, specialistRepository.count());
+            "/api/contracts/1100", HttpMethod.DELETE, request, Void.class);
+        assertAll(
+            () -> assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode()),
+            () -> assertEquals(0, contractRepository.count()),
+            () -> assertEquals(1, offerRepository.count()),
+            () -> assertEquals(2, gigRepository.count()),
+            () -> assertEquals(1, specialistRepository.count())
+        );
     }
 
 }

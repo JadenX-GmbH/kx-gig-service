@@ -21,8 +21,6 @@ public class Gig {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String gigId;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal maxPrice;

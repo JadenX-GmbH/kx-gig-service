@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 
 @Getter
@@ -18,7 +19,6 @@ public class GigDTO {
 
     private Long id;
 
-    @NotNull
     @Size(max = 255)
     private String gigId;
 
@@ -52,8 +52,16 @@ public class GigDTO {
 
     private Boolean isActive = Boolean.TRUE;
 
-    private List<Long> gigChosenSpecialists;
+    private List<UUID> gigChosenSpecialists;
 
-    private Long dataOwner;
+    private UUID acceptedSpecialist;
+
+    private UUID dataOwner;
+
+    private List<SlaStatementDTO> slaStatementDTOList;
+
+    private List<SkillsetDTO> skillsetDTOList;
+
+    private Boolean offerAccepted = Boolean.FALSE;
 
 }

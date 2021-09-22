@@ -19,9 +19,9 @@ import java.util.Optional;
 @Slf4j
 public class TestSecurityConfig {
 
-    static final String AUTH_TOKEN = "token";
-    static final String SUB = "sub";
-    static final String USER_AUTH_ID = "8b9ee60c-6102-4601-8530-041c01f4a6e9";
+    private static final String AUTH_TOKEN = "token";
+    private static final String SUB = "sub";
+    private static final String USER_AUTH_ID = "8b9ee60c-6102-4601-8530-041c01f4a6e9";
 
     @Bean
     public JwtDecoder jwtDecoder() {

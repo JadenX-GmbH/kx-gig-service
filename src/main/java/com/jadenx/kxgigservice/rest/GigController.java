@@ -1,8 +1,13 @@
 package com.jadenx.kxgigservice.rest;
 
+import com.jadenx.kxgigservice.model.ContractDTO;
 import com.jadenx.kxgigservice.model.GigDTO;
+import com.jadenx.kxgigservice.model.OfferDTO;
+import com.jadenx.kxgigservice.model.PaginatedResponse;
 import com.jadenx.kxgigservice.service.GigService;
+import com.jadenx.kxgigservice.service.OfferService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,24 +25,30 @@ public class GigController {
 
     private final GigService gigService;
 
-    public GigController(final GigService gigService) {
+    private final OfferService offerService;
+
+
+    public GigController(final GigService gigService, final OfferService offerService) {
         this.gigService = gigService;
+        this.offerService = offerService;
     }
 
     @GetMapping
-    public ResponseEntity<List<GigDTO>> getAllGigs() {
-        return ResponseEntity.ok(gigService.findAll());
+    public ResponseEntity<PaginatedResponse<?>> getAllGigs(final Pageable pageable) {
+        return ResponseEntity.ok(gigService.findAll(pageable));
     }
 
     @GetMapping("/dataowner/gigs")
-    public  ResponseEntity<List<GigDTO>> getGigsDataOwner(final Principal user) {
-        return ResponseEntity.ok(gigService.getGigsByDataOwner(UUID.fromString(user.getName())));
+    public ResponseEntity<PaginatedResponse<?>> getGigsDataOwner(final Principal user,
+                                                                 final Pageable pageable) {
+        return ResponseEntity.ok(gigService.getGigsByDataOwner(UUID.fromString(user.getName()), pageable));
     }
 
     @GetMapping("/specialist/gigs")
-    public  ResponseEntity<List<GigDTO>> getGigsSpecialist(final Principal user) {
+    public ResponseEntity<PaginatedResponse<?>> getGigsSpecialist(final Principal user,
+                                                                  final Pageable pageable) {
         log.info(user.getName());
-        return ResponseEntity.ok(gigService.getGigsBySpecialist(UUID.fromString(user.getName())));
+        return ResponseEntity.ok(gigService.getGigsBySpecialist(UUID.fromString(user.getName()), pageable));
     }
 
     @GetMapping("/{id}")
@@ -46,8 +57,9 @@ public class GigController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createGig(@RequestBody @Valid final GigDTO gigDTO) {
-        return new ResponseEntity<>(gigService.create(gigDTO), HttpStatus.CREATED);
+    public ResponseEntity<Long> createGig(final Principal user, @RequestBody @Valid final GigDTO gigDTO,
+                                          @RequestHeader("Authorization") final String token) {
+        return new ResponseEntity<>(gigService.create(gigDTO, user, token), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -63,4 +75,20 @@ public class GigController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{gigId}/offers")
+    public ResponseEntity<PaginatedResponse<?>> getOffersByGigId(
+        @PathVariable final Long gigId, final Pageable pageable) {
+        return ResponseEntity.ok(offerService.getOffersByGigId(gigId, pageable));
+    }
+
+    @GetMapping("/{gigId}/specialist/offers")
+    public ResponseEntity<List<OfferDTO>> getOfferByGigAndSpecialist(@PathVariable final Long gigId,
+                                                                     final Principal user) {
+        return ResponseEntity.ok((offerService.getOfferByGigAndSpecialist(gigId,UUID.fromString(user.getName()))));
+    }
+
+    @GetMapping("/{id}/contracts")
+    public ResponseEntity<List<ContractDTO>> getContractsByGigId(@PathVariable final Long id) {
+        return ResponseEntity.ok(gigService.getContractsByGigId(id));
+    }
 }

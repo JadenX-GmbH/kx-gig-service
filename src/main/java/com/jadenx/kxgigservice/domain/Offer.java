@@ -44,10 +44,11 @@ public class Offer {
 
     @OneToOne(mappedBy = "offer",
         fetch = FetchType.LAZY,
-        orphanRemoval = true)
+         orphanRemoval = true,
+        cascade = CascadeType.ALL)
     private Contract contract;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "specialist_id", nullable = false)
     private Specialist specialist;
 

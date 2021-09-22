@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SkillsetControllerTest extends BaseIT {
 
     @Test
-    @Sql({"/data/dataOwnerData.sql","/data/gigData.sql", "/data/skillsetData.sql"})
+    @Sql({"/data/dataOwnerData.sql", "/data/gigData.sql", "/data/skillsetData.sql"})
     public void getAllSkillsets_success() {
         final HttpEntity<String> request = new HttpEntity<>(null, headers());
         final ResponseEntity<List<SkillsetDTO>> response = restTemplate.exchange(
@@ -32,14 +32,14 @@ public class SkillsetControllerTest extends BaseIT {
     }
 
     @Test
-    @Sql({"/data/dataOwnerData.sql","/data/gigData.sql", "/data/skillsetData.sql"})
+    @Sql({"/data/dataOwnerData.sql", "/data/gigData.sql", "/data/skillsetData.sql"})
     public void getSkillset_success() {
         final HttpEntity<String> request = new HttpEntity<>(null, headers());
         final ResponseEntity<SkillsetDTO> response = restTemplate.exchange(
             "/api/skillsets/1400", HttpMethod.GET, request, SkillsetDTO.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Donec ac nibh...", response.getBody().getSklillsetId());
+        assertEquals("Donec ac nibh...", response.getBody().getSkillsetId());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class SkillsetControllerTest extends BaseIT {
     }
 
     @Test
-    @Sql({"/data/dataOwnerData.sql","/data/gigData.sql"})
+    @Sql({"/data/dataOwnerData.sql", "/data/gigData.sql"})
     public void createSkillset_success() {
         final HttpEntity<String> request = new HttpEntity<>(
             readResource("/requests/skillsetDTORequest.json"), headers());
@@ -73,11 +73,11 @@ public class SkillsetControllerTest extends BaseIT {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("MethodArgumentNotValidException", response.getBody().getException());
-        assertEquals("sklillsetId", response.getBody().getFieldErrors().get(0).getField());
+        assertEquals("skillsetId", response.getBody().getFieldErrors().get(0).getField());
     }
 
     @Test
-    @Sql({"/data/dataOwnerData.sql","/data/gigData.sql", "/data/skillsetData.sql"})
+    @Sql({"/data/dataOwnerData.sql", "/data/gigData.sql", "/data/skillsetData.sql"})
     public void updateSkillset_success() {
         final HttpEntity<String> request = new HttpEntity<>(
             readResource("/requests/skillsetDTORequest.json"), headers());
@@ -85,11 +85,11 @@ public class SkillsetControllerTest extends BaseIT {
             "/api/skillsets/1400", HttpMethod.PUT, request, Void.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Aenean pulvinar...", skillsetRepository.findById(1400L).get().getSklillsetId());
+        assertEquals("Aenean pulvinar...", skillsetRepository.findById(1400L).get().getSkillsetId());
     }
 
     @Test
-    @Sql({"/data/dataOwnerData.sql","/data/gigData.sql", "/data/skillsetData.sql"})
+    @Sql({"/data/dataOwnerData.sql", "/data/gigData.sql", "/data/skillsetData.sql"})
     public void deleteSkillset_success() {
         final HttpEntity<String> request = new HttpEntity<>(null, headers());
         final ResponseEntity<Void> response = restTemplate.exchange(

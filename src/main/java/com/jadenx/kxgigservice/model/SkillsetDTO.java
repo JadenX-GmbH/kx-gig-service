@@ -15,9 +15,8 @@ public class SkillsetDTO {
 
     @NotNull
     @Size(max = 255)
-    private String sklillsetId;
+    private String skillsetId;
 
-    @NotNull
     private Long gig;
 
 }

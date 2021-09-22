@@ -19,22 +19,21 @@ spring:
             non_contextual_creation: true
         id:
           new_generator_mappings: true
-
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: <>
-  h2:
-    console:
-      enabled: true
 springdoc:
   pathsToMatch: /api/**
 logging:
   level:
     root: INFO
-
-
+server:
+  port: 8081
+feign:
+  url: <kx-execution-service../api/gigs>
+  jsUrl: <kx-blockchain-middleware>
 ---
 # DEV
 spring:
@@ -42,11 +41,11 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: ${JDBC_DATABASE_URL:jdbc:h2:mem:kx-execution-service;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL}
-    username: ${JDBC_DATABASE_USERNAME:sa}
-    password: ${JDBC_DATABASE_PASSWORD:}
-
-stage: dev
+    url: ${JDBC_DATABASE_URL:jdbc:mysql://localhost:3306/kx-gig-dev?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC;}
+    username: ${JDBC_DATABASE_USERNAME:root}
+    password: ${JDBC_DATABASE_PASSWORD:AcA3Xy-H8t3X-Bwm66}
+    driver-class-name: com.mysql.jdbc.Driver
+  stage: dev
 
 ---
 # local - deployed on AWS for dev
@@ -70,7 +69,4 @@ spring:
     url: ${JDBC_DATABASE_URL:}
     username: ${JDBC_DATABASE_USERNAME:}
     password: ${JDBC_DATABASE_PASSWORD:}
-  h2:
-    console:
-      enabled: false
 stage: testing

@@ -1,5 +1,4 @@
 {
-    "gigId": "Aenean pulvinar...",
     "maxPrice": "83.08",
     "price": "73.08",
     "priceToken": 18.42,
@@ -8,5 +7,25 @@
     "executionType": "TEE",
     "status": "IN_PROGRESS",
     "executionpool": "Aenean pulvinar...",
-    "isActive": true
+    "isActive": true,
+    "gigChosenSpecialists": [
+        "bf14fa45-aa3c-4fa6-8f30-80a71fa6af5c"
+    ],
+    "slaStatementDTOList": [
+        {
+            "subject": "Aenean pulvinar...",
+            "restriction": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.",
+            "isActive": true
+        },
+        {
+            "subject": "test test ",
+            "restriction": "error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.",
+            "isActive": true
+        }
+    ],
+    "skillsetDTOList": [
+        {
+            "skillsetId": "1000"
+        }
+    ]
 }

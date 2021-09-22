@@ -8,12 +8,13 @@ definitions:
           - maven
         script:
           - export TESTCONTAINERS_RYUK_DISABLED=true
-          - mvn clean install
+          - mvn clean install jacoco:report
         services:
           - docker
         artifacts:
           - target/*
         after-script:
+          - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
           # Collect checkstyle results, if any, and convert to Bitbucket Code Insights.
           - pipe: atlassian/checkstyle-report:0.2.0
     - step: &security_scan

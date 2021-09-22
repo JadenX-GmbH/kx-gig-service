@@ -98,7 +98,7 @@ public class CandidateSpecialistControllerTest extends BaseIT {
             "/api/candidateSpecialists/1700", HttpMethod.DELETE, request, Void.class);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        assertEquals(0, candidateSpecialistRepository.count());
+        assertEquals(1, candidateSpecialistRepository.count());
     }
 
 }
